@@ -1,0 +1,30 @@
+version: '3.3'
+
+services:
+  servico:
+    image: educara/servico
+    container_name: servico
+    restart: always
+    build: 
+      dockerfile: ./Dockerfile.servico
+      context: .
+    ports:
+      - '3001:3000'
+    volumes:
+      - ./servico:/servico
+    command: python3 /servico/servico.py
+    depends_on:
+      - objetos
+
+  objetos:
+    image: educara/objetos
+    container_name: objetos
+    restart: always
+    build: 
+      dockerfile: ./Dockerfile.objetos
+      context: .
+    hostname: objetos
+    volumes:
+      - './objetos:/usr/share/nginx/html'
+    ports:
+      - '3002:80'

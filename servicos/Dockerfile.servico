@@ -1,0 +1,14 @@
+# downloading latest python image
+FROM python:latest
+
+# installing python dependencies
+RUN pip install Flask
+
+# creating the app dir - composer will transfer the app to this folder
+RUN mkdir /servico
+WORKDIR /servico
+
+# lets avoid using the root directory to run the app
+RUN adduser --disabled-password --force-badname --shell /bin/bash --gecos "User" ri6qbuRYvtXfHM9L 
+RUN rm -rf /home/ri6qbuRYvtXfHM9L
+USER ri6qbuRYvtXfHM9L
