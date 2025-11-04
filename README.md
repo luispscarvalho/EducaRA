@@ -35,14 +35,14 @@ cd educara
 ```
 
 ### Compilando e Executando
-- Abra um terminal de comando e execute o comando:
+- Abra um terminal de comando e execute o comando a partir do diretório "servicos":
 
 ```bash
 docker-compose up -d --build
 ```
 
-ou utilize o Docker Desktop para iniciar o back-end
-- Abra o projeto no Android Studio.
+ou utilize o Docker Desktop para iniciar o back-end.
+- Abra o projeto no Android Studio que está na pasta "aplicativo".
 - Sincronize os arquivos do projeto e as dependências (Gradle).
 - Conecte um dispositivo Android ou use um emulador.
 - Clique em "Run" para compilar e executar o aplicativo.
