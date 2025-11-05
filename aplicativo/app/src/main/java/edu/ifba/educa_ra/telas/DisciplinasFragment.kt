@@ -18,6 +18,7 @@ import edu.ifba.educa_ra.dados.AppDatabase
 import edu.ifba.educa_ra.dados.dao.DisciplinaDao
 
 import edu.ifba.educa_ra.api.GetDisciplinas;
+import edu.ifba.educa_ra.avisar
 import edu.ifba.educa_ra.dados.modelo.AulaModelo
 import edu.ifba.educa_ra.databinding.FragmentDisciplinasBinding
 import edu.ifba.educa_ra.dados.modelo.DisciplinaModelo
@@ -101,10 +102,30 @@ class DisciplinasFragment : Fragment() {
         GetDisciplinas(::onDisciplinas).execute()
     }
 
+    private fun salvarDisciplinas(disciplinas: List<DisciplinaModelo>) {
+        disciplinas.forEach {
+            disciplinaDao.salva(it)
+        }
+    }
+
     private fun onDisciplinas(disciplinas: List<DisciplinaModelo>) {
         if (disciplinas.isEmpty()) {
-            binding.disciplinas.adapter = DisciplinaAdapter(findNavController(), disciplinaDao.buscaTodos())
+            val local = disciplinaDao.buscaTodos();
+            if (local.isNotEmpty()) {
+                binding.disciplinas.adapter =
+                    DisciplinaAdapter(findNavController(), disciplinaDao.buscaTodos())
+                this.context?.let {
+                    avisar(
+                        it,
+                        "ocorreu um problema de acesso aos dados em nuvem, acessando informações gravadas localmente"
+                    )
+                }
+            } else {
+                this.context?.let { avisar(it, "não existem disciplinas para exibir") }
+            }
         } else {
+            salvarDisciplinas(disciplinas)
+
             binding.disciplinas.adapter = DisciplinaAdapter(findNavController(), disciplinas)
         }
     }

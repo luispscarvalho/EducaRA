@@ -20,10 +20,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import edu.ifba.educa_ra.R
 import edu.ifba.educa_ra.api.GetAulas
+import edu.ifba.educa_ra.avisar
 import edu.ifba.educa_ra.dados.AppDatabase
 import edu.ifba.educa_ra.dados.dao.AulaDao
 import edu.ifba.educa_ra.databinding.FragmentAulasBinding
 import edu.ifba.educa_ra.dados.modelo.AulaModelo
+import edu.ifba.educa_ra.dados.modelo.DisciplinaModelo
 
 class AulasHolder(view: View) : RecyclerView.ViewHolder(view) {
     val card: CardView
@@ -114,10 +116,23 @@ class AulasFragment : Fragment() {
         return idDisciplina?.let { aulaDao.buscaPorDisciplina(it) }
     }
 
+    private fun salvarAulas(aulas: List<AulaModelo>) {
+        aulas.forEach {
+            aulaDao.salva(it)
+        }
+    }
+
     private fun onAulas(aulas: List<AulaModelo>) {
         if (aulas.isEmpty()) {
-            binding.aulas.adapter = getAulasLocal()?.let { AulasAdapter(findNavController(), it) }
+            val local = getAulasLocal()
+            if (!local.isNullOrEmpty()) {
+                binding.aulas.adapter = AulasAdapter(findNavController(), local)
+            } else {
+                this.context?.let { avisar(it, "não existem aulas para exibir") }
+            }
         } else {
+            salvarAulas(aulas)
+
             binding.aulas.adapter = AulasAdapter(findNavController(), aulas)
         }
     }

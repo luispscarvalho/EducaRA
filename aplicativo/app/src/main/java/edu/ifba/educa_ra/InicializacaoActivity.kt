@@ -43,21 +43,8 @@ class InicializacaoActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        informar("verificando...")
-        executarComAtraso(timerTask { IsAlive(::onAlive).execute() })
-    }
-
-    private fun onAlive(alive: Boolean) {
-        informar(if (alive) "serviços disponíveis" else "serviços indisponíveis")
-
-        if (alive) {
-            executarComAtraso(timerTask { VerificarARCore(this@InicializacaoActivity, ::informarSobreARCore).execute() })
-        } else {
-            executarComAtraso(timerTask {
-                ErroActivity.exibirErro(this@InicializacaoActivity, "falha na inicialização")
-                finish()
-            })
-        }
+        informar("iniciando...")
+        executarComAtraso(timerTask { VerificarARCore(this@InicializacaoActivity, ::informarSobreARCore).execute() })
     }
 
     private fun informarSobreARCore(mensagem: String) {

@@ -27,9 +27,11 @@ import edu.ifba.educa_ra.R
 import edu.ifba.educa_ra.api.GetConteudos
 import edu.ifba.educa_ra.api.GetObjeto
 import edu.ifba.educa_ra.arcore.VisualizadorARCoreActivity
+import edu.ifba.educa_ra.avisar
 import edu.ifba.educa_ra.confirmar
 import edu.ifba.educa_ra.dados.AppDatabase
 import edu.ifba.educa_ra.dados.dao.ConteudoDao
+import edu.ifba.educa_ra.dados.modelo.AulaModelo
 import edu.ifba.educa_ra.databinding.FragmentConteudosBinding
 import edu.ifba.educa_ra.dados.modelo.ConteudoModelo
 import edu.ifba.educa_ra.dados.modelo.ObjetoSelecionado
@@ -252,19 +254,27 @@ class ConteudosFragment : Fragment() {
         return idAula?.let { conteudoDao.buscaPorAula(it) }
     }
 
+    private fun salvarConteudos(conteudos: List<ConteudoModelo>) {
+        conteudos.forEach {
+            conteudoDao.salva(it)
+        }
+    }
+
     private fun onConteudos(conteudos: List<ConteudoModelo>) {
         if (conteudos.isEmpty()) {
-            binding.conteudos.adapter = getConteudosLocal()?.let {
-                ConteudosAdapter(this.requireContext(), binding.progresso,
-                    it, this)
+            val local = getConteudosLocal()
+
+            if (!local.isNullOrEmpty()) {
+                binding.conteudos.adapter = ConteudosAdapter(this.requireContext(), binding.progresso, local, this)
+            } else {
+                this.context?.let { avisar(it, "não existem conteúdos para exibir") }
             }
         } else {
+            salvarConteudos(conteudos)
+
             binding.conteudos.adapter = ConteudosAdapter(this.requireContext(), binding.progresso,
                 conteudos, this)
         }
-
-        val adapter = ConteudosAdapter(this.requireContext(), binding.progresso, conteudos, this)
-        binding.conteudos.adapter = adapter
     }
 
     override fun onDestroyView() {
